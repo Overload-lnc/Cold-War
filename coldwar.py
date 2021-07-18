@@ -53,9 +53,8 @@ class Token:
         self.self_hitbox = RectHitbox(self.x, self.x + self.width, self.y, self.y + self.length)
 
     def IsTriggered(self):
-        if self.self_hitbox.detect(self.trigger_x, self.trigger_y):
-            self.spawn = False
-            return True
+        self.spawn = not self.self_hitbox.detect(self.trigger_x, self.trigger_y)
+        return not self.spawn
 
     def ReValHitBox(self, mode, sx, ex, sy, ey):
         if mode == 0:
@@ -75,9 +74,9 @@ class Token:
             self.self_hitbox.end_y = self.y + self.length + ey
 
     def IsTriggeredCond(self, cond_list):
-        if self.self_hitbox.detect(self.trigger_x, self.trigger_y) and all(cond_list):
-            self.spawn = False
-            return True
+        if all(cond_list):
+            self.spawn = not self.self_hitbox.detect(self.trigger_x, self.trigger_y)
+            return not self.spawn
 
     def respawn(self):
         self.x = random.randint(self.x_min, self.x_max - self.width)
@@ -149,25 +148,14 @@ class Character:
             "c": pygame.K_c, "v": pygame.K_v, "t": pygame.K_t, "g": pygame.K_g, "b": pygame.K_b,
             "y": pygame.K_y, "h": pygame.K_h, "n": pygame.K_n, "u": pygame.K_u, "j": pygame.K_j,
             "m": pygame.K_m, "k": pygame.K_k, "o": pygame.K_o, "l": pygame.K_l, "p": pygame.K_p,
-            "up": pygame.K_UP, "down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT
+            "up": pygame.K_UP, "down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT,
+            "": ""
         }
 
-        if key_map[0] != "":
-            self.ver_pos = self.key_binds[key_map[0]]
-        else:
-            self.ver_pos = ""
-        if key_map[1] != "":
-            self.ver_neg = self.key_binds[key_map[1]]
-        else:
-            self.ver_neg = ""
-        if key_map[2] != "":
-            self.hor_pos = self.key_binds[key_map[2]]
-        else:
-            self.hor_pos = ""
-        if key_map[3] != "":
-            self.hor_neg = self.key_binds[key_map[3]]
-        else:
-            self.hor_neg = ""
+        self.ver_pos = self.key_binds[key_map[0]]
+        self.ver_neg = self.key_binds[key_map[1]]
+        self.hor_pos = self.key_binds[key_map[2]]
+        self.hor_neg = self.key_binds[key_map[3]]
 
     def hitbox(self, trigger_x, trigger_y):
         return RectHitbox(self.x, self.y, self.x + self.width, self.y + self.length).detect(trigger_x, trigger_y)
@@ -404,13 +392,10 @@ while run:
     # event handler
     for event in pygame.event.get():
 
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             run = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                run = False
-
             if event.key == char_us.ver_pos:
                 cY1 = us_speed
             elif event.key == char_us.ver_neg:
@@ -427,17 +412,17 @@ while run:
                 else:
                     us1_missile.respawnNoCord()
 
-            if event.key == pygame.K_KP0:
+            if event.key == pygame.K_LEFT:
                 if ru1_missile.spawn is True:
                     ru2_missile.respawnNoCord()
                 else:
                     ru1_missile.respawnNoCord()
 
         if event.type == pygame.KEYUP:
-            if event.key == char_us.ver_pos or event.key == char_us.ver_neg:
+            if (event.key == char_us.ver_pos and cY1 > 0) or (event.key == char_us.ver_neg and cY1 < 0):
                 cY1 = 0
 
-            if event.key == char_ru.ver_pos or event.key == char_ru.ver_neg:
+            if (event.key == char_ru.ver_pos and cY2 > 0) or (event.key == char_ru.ver_neg and cY2 < 0):
                 cY2 = 0
 
     char_us.y += cY1
