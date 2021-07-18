@@ -1,5 +1,4 @@
 import pygame
-import os
 import random
 
 
@@ -23,14 +22,6 @@ def x_checker(start, end, current_x):
 
 def y_checker(start, end, current_y):
     return start <= current_y <= end
-
-
-def createWindow(width, length, title, has_icon, icon_path):
-    window = pygame.display.set_mode((width, length))
-    pygame.display.set_caption(title)
-    if has_icon:
-        pygame.display.set_icon(pygame.image.load(icon_path))
-    return window
 
 
 class Clock:
@@ -106,12 +97,6 @@ class Token:
         if self.spawn is True:
             window.blit(img, (self.x, self.y))
 
-    def setValue(self, value):
-        self.value = value
-
-    def retValue(self):
-        return self.value
-
     def addRange(self, add_range):
         self.self_hitbox.start_x -= add_range
         self.self_hitbox.end_x += add_range
@@ -132,10 +117,7 @@ class RectHitbox:
                                                    (self.end_y - self.start_y)), thickness)
 
     def detect(self, target_x, target_y):
-        if x_checker(self.start_x, self.end_x, target_x) and y_checker(self.start_y, self.end_y, target_y):
-            return True
-        else:
-            return False
+        return x_checker(self.start_x, self.end_x, target_x) and y_checker(self.start_y, self.end_y, target_y)
 
 
 class Point2D:
@@ -267,10 +249,10 @@ class Effect:
 
 
 pygame.init()
-window = createWindow(800, 700, "Cold War", False, "")
+window = pygame.display.set_mode((800, 700))
+pygame.display.set_caption("Cold War")
 clock = Clock(90)
 run = True
-main_dir = os.getcwd()
 
 us_speed = 2
 ru_speed = 2
@@ -284,21 +266,21 @@ cY1 = 0
 us_ms_point = Point2D(char_us.x + char_us.width, char_us.y + char_us.length / 2)
 us1_missile = Token(us_ms_point.x, us_ms_point.y, 28, 7, 0, 0, False, 0, 0, 0, 0)
 us2_missile = Token(us_ms_point.x, us_ms_point.y, 28, 7, 0, 0, False, 0, 0, 0, 0)
-us1_missile.setValue(200)
-us2_missile.setValue(200)
+us1_missile.value = 200
+us2_missile.value = 200
 us_score = 0
 
 # player1 buildings
 silo1 = Token(0, 20, 84, 98, 800, 700, True, 0, 0, 0, 0)
-silo1.setValue(700)  # score for destroying
+silo1.value = 700  # score for destroying
 silo2 = Token(0, 218, 84, 98, 800, 700, True, 0, 0, 0, 0)
-silo2.setValue(700)  # score for destroying
+silo2.value = 700   # score for destroying
 silo3 = Token(0, 418, 84, 98, 800, 700, True, 0, 0, 0, 0)
-silo3.setValue(700)  # score for destroying
+silo3.value = 700   # score for destroying
 chem_us = Token(0, 128, 75, 75, 800, 700, True, 0, 0, 0, 0)
-chem_us.setValue(400)
+chem_us.value = 400
 log_us = Token(0, 318, 75, 75, 800, 700, True, 0, 0, 0, 0)
-log_us.setValue(400)
+log_us.value = 400
 
 
 # player2
@@ -308,21 +290,21 @@ cY2 = 0
 ru_ms_point = Point2D(char_ru.x - 28, char_ru.y + char_ru.length / 2)
 ru1_missile = Token(ru_ms_point.x, ru_ms_point.y, 28, 7, 0, 0, False, 0, 0, 0, 0)
 ru2_missile = Token(ru_ms_point.x, ru_ms_point.y, 28, 7, 0, 0, False, 0, 0, 0, 0)
-ru1_missile.setValue(200)
-ru2_missile.setValue(200)
+ru1_missile.value = 200
+ru2_missile.value = 200
 ru_score = 0
 
 # player2 buildings
 silo01 = Token(716, 20, 84, 98, 800, 700, True, 0, 0, 0, 0)
-silo01.setValue(700)  # score for destroying
+silo01.value = 700  # score for destroying
 silo02 = Token(716, 218, 84, 98, 800, 700, True, 0, 0, 0, 0)
-silo02.setValue(700)  # score for destroying
+silo02.value = 700  # score for destroying
 silo03 = Token(716, 418, 84, 98, 800, 700, True, 0, 0, 0, 0)
-silo03.setValue(700)  # score for destroying
+silo03.value = 700  # score for destroying
 chem_ru = Token(725, 128, 75, 75, 800, 700, True, 0, 0, 0, 0)
-chem_ru.setValue(400)
+chem_ru.value = 400
 log_ru = Token(725, 318, 75, 75, 800, 700, True, 0, 0, 0, 0)
-log_ru.setValue(400)
+log_ru.value = 400
 
 # us texture loads
 char_us_tex = pygame.image.load("text\\us_missile.png")
@@ -499,14 +481,14 @@ while run:
         if silo1.IsTriggered():
             silo1.spawn = False
             ru1_missile.spawn = False
-            ru_score += silo1.retValue()
+            ru_score += silo1.value
         else:
             silo1.trigger_x = ru2_missile.x
             silo1.trigger_y = ru2_missile.y + ru1_missile.length / 2
             if silo1.IsTriggered():
                 silo1.spawn = False
                 ru2_missile.spawn = False
-                ru_score += silo1.retValue()
+                ru_score += silo1.value
 
     if (ru1_missile.spawn is True or ru2_missile.spawn is True) and silo2.spawn is True:
         silo2.trigger_x = ru1_missile.x
@@ -514,14 +496,14 @@ while run:
         if silo2.IsTriggered():
             silo2.spawn = False
             ru1_missile.spawn = False
-            ru_score += silo2.retValue()
+            ru_score += silo2.value
         else:
             silo2.trigger_x = ru2_missile.x
             silo2.trigger_y = ru2_missile.y + ru1_missile.length / 2
             if silo2.IsTriggered():
                 silo2.spawn = False
                 ru2_missile.spawn = False
-                ru_score += silo2.retValue()
+                ru_score += silo2.value
 
     if (ru1_missile.spawn is True or ru2_missile.spawn is True) and silo3.spawn is True:
         silo3.trigger_x = ru1_missile.x
@@ -529,14 +511,14 @@ while run:
         if silo3.IsTriggered():
             silo3.spawn = False
             ru1_missile.spawn = False
-            ru_score += silo3.retValue()
+            ru_score += silo3.value
         else:
             silo3.trigger_x = ru2_missile.x
             silo3.trigger_y = ru2_missile.y + ru1_missile.length / 2
             if silo3.IsTriggered():
                 silo3.spawn = False
                 ru2_missile.spawn = False
-                ru_score += silo3.retValue()
+                ru_score += silo3.value
 
     if (ru1_missile.spawn is True or ru2_missile.spawn is True) and chem_us.spawn is True:
         chem_us.trigger_x = ru1_missile.x
@@ -545,7 +527,7 @@ while run:
             chem_us.spawn = False
             ru1_missile.spawn = False
             us_missile_speed = 2
-            ru_score += chem_us.retValue()
+            ru_score += chem_us.value
         else:
             chem_us.trigger_x = ru2_missile.x
             chem_us.trigger_y = ru2_missile.y + ru1_missile.length / 2
@@ -553,7 +535,7 @@ while run:
                 chem_us.spawn = False
                 ru2_missile.spawn = False
                 us_missile_speed = 2
-                ru_score += chem_us.retValue()
+                ru_score += chem_us.value
 
     if (ru1_missile.spawn is True or ru2_missile.spawn is True) and log_us.spawn is True:
         log_us.trigger_x = ru1_missile.x
@@ -562,7 +544,7 @@ while run:
             log_us.spawn = False
             ru1_missile.spawn = False
             us_speed = 1.5
-            ru_score += log_us.retValue()
+            ru_score += log_us.value
         else:
             log_us.trigger_x = ru2_missile.x
             log_us.trigger_y = ru2_missile.y + ru1_missile.length / 2
@@ -570,7 +552,7 @@ while run:
                 log_us.spawn = False
                 ru2_missile.spawn = False
                 us_speed = 1.5
-                ru_score += log_us.retValue()
+                ru_score += log_us.value
     # ru
     if (us1_missile.spawn is True or us2_missile.spawn is True) and silo01.spawn is True:
         silo01.trigger_x = us1_missile.x
@@ -578,14 +560,14 @@ while run:
         if silo01.IsTriggered():
             silo01.spawn = False
             us1_missile.spawn = False
-            us_score += silo01.retValue()
+            us_score += silo01.value
         else:
             silo01.trigger_x = us2_missile.x
             silo01.trigger_y = us2_missile.y + us1_missile.length / 2
             if silo01.IsTriggered():
                 silo01.spawn = False
                 us2_missile.spawn = False
-                us_score += silo01.retValue()
+                us_score += silo01.value
 
     if (us1_missile.spawn is True or us2_missile.spawn is True) and silo02.spawn is True:
         silo02.trigger_x = us1_missile.x
@@ -593,14 +575,14 @@ while run:
         if silo02.IsTriggered():
             silo02.spawn = False
             us1_missile.spawn = False
-            us_score += silo02.retValue()
+            us_score += silo02.value
         else:
             silo02.trigger_x = us2_missile.x
             silo02.trigger_y = us2_missile.y + ru1_missile.length / 2
             if silo02.IsTriggered():
                 silo02.spawn = False
                 us2_missile.spawn = False
-                us_score += silo02.retValue()
+                us_score += silo02.value
 
     if (us1_missile.spawn is True or us2_missile.spawn is True) and silo03.spawn is True:
         silo03.trigger_x = us1_missile.x
@@ -608,14 +590,14 @@ while run:
         if silo03.IsTriggered():
             silo03.spawn = False
             us1_missile.spawn = False
-            us_score += silo03.retValue()
+            us_score += silo03.value
         else:
             silo03.trigger_x = us2_missile.x
             silo03.trigger_y = us2_missile.y + us1_missile.length / 2
             if silo03.IsTriggered():
                 silo03.spawn = False
                 us2_missile.spawn = False
-                us_score += silo03.retValue()
+                us_score += silo03.value
 
     if (us1_missile.spawn is True or us2_missile.spawn is True) and chem_ru.spawn is True:
         chem_ru.trigger_x = us1_missile.x
@@ -624,7 +606,7 @@ while run:
             chem_ru.spawn = False
             us1_missile.spawn = False
             ru_missile_speed = 2
-            us_score += chem_ru.retValue()
+            us_score += chem_ru.value
         else:
             chem_ru.trigger_x = us2_missile.x
             chem_ru.trigger_y = us2_missile.y + us1_missile.length / 2
@@ -632,7 +614,7 @@ while run:
                 chem_ru.spawn = False
                 us2_missile.spawn = False
                 ru_missile_speed = 2
-                us_score += chem_ru.retValue()
+                us_score += chem_ru.value
 
     if (us1_missile.spawn is True or us2_missile.spawn is True) and log_ru.spawn is True:
         log_ru.trigger_x = us1_missile.x
@@ -641,7 +623,7 @@ while run:
             log_ru.spawn = False
             us1_missile.spawn = False
             ru_speed = 1.5
-            us_score += log_ru.retValue()
+            us_score += log_ru.value
         else:
             log_ru.trigger_x = us2_missile.x
             log_ru.trigger_y = us2_missile.y + us1_missile.length / 2
@@ -649,7 +631,7 @@ while run:
                 log_ru.spawn = False
                 us2_missile.spawn = False
                 ru_speed = 1.5
-                us_score += log_ru.retValue()
+                us_score += log_ru.value
 
     char_us.drawTexture(char_us_tex, False)
     char_ru.drawTexture(char_ru_tex, False)
@@ -678,8 +660,8 @@ while run:
             ru1_missile.spawn = False
             missile_exp1.active = True
             window.blit(exp, (us1_missile.x, us1_missile.y))
-            ru_score += us1_missile.retValue()
-            us_score += ru1_missile.retValue()
+            ru_score += us1_missile.value
+            us_score += ru1_missile.value
         else:
             us1_missile.trigger_x = ru2_missile.x
             us1_missile.trigger_y = ru2_missile.y + ru2_missile.length / 2
@@ -688,8 +670,8 @@ while run:
                 ru2_missile.spawn = False
                 missile_exp1.active = True
                 window.blit(exp, (us1_missile.x, us1_missile.y))
-                ru_score += us1_missile.retValue()
-                us_score += ru1_missile.retValue()
+                ru_score += us1_missile.value
+                us_score += ru1_missile.value
     if us2_missile.spawn is True:
         us2_missile.drawTexture(window, us_missile_tex)
         us2_missile.x += us_missile_speed
@@ -705,8 +687,8 @@ while run:
             ru1_missile.spawn = False
             missile_exp2.active = True
             window.blit(exp, (us2_missile.x, us2_missile.y))
-            ru_score += us1_missile.retValue()
-            us_score += ru1_missile.retValue()
+            ru_score += us1_missile.value
+            us_score += ru1_missile.value
         else:
             us2_missile.trigger_x = ru2_missile.x
             us2_missile.trigger_y = ru2_missile.y + ru2_missile.length / 2
@@ -715,8 +697,8 @@ while run:
                 us2_missile.spawn = False
                 missile_exp2.active = True
                 window.blit(exp, (us2_missile.x, us2_missile.y))
-                ru_score += us1_missile.retValue()
-                us_score += ru1_missile.retValue()
+                ru_score += us1_missile.value
+                us_score += ru1_missile.value
 
     # missile ru
     if ru1_missile.spawn is True:
@@ -733,8 +715,8 @@ while run:
             ru1_missile.spawn = False
             us1_missile.spawn = False
             window.blit(exp, (ru1_missile.x, ru1_missile.y))
-            ru_score += us1_missile.retValue()
-            us_score += ru1_missile.retValue()
+            ru_score += us1_missile.value
+            us_score += ru1_missile.value
         else:
             ru1_missile.trigger_x = us2_missile.x
             ru1_missile.trigger_y = us2_missile.y + us2_missile.length / 2
@@ -742,8 +724,8 @@ while run:
                 us2_missile.spawn = False
                 ru1_missile.spawn = False
                 window.blit(exp, (ru1_missile.x, ru1_missile.y))
-                ru_score += us1_missile.retValue()
-                us_score += ru1_missile.retValue()
+                ru_score += us1_missile.value
+                us_score += ru1_missile.value
     if ru2_missile.spawn is True:
         ru2_missile.drawTexture(window, ru_missile_tex)
         ru2_missile.x -= ru_missile_speed
@@ -759,8 +741,8 @@ while run:
             us1_missile.spawn = False
             ru2_missile.spawn = False
             window.blit(exp, (ru2_missile.x, ru2_missile.y))
-            ru_score += us1_missile.retValue()
-            us_score += ru1_missile.retValue()
+            ru_score += us1_missile.value
+            us_score += ru1_missile.value
         else:
             ru2_missile.trigger_x = us2_missile.x
             ru2_missile.trigger_y = us2_missile.y + us2_missile.length / 2
@@ -768,8 +750,8 @@ while run:
                 us2_missile.spawn = False
                 ru2_missile.spawn = False
                 window.blit(exp, (ru2_missile.x, ru2_missile.y))
-                ru_score += us1_missile.retValue()
-                us_score += ru1_missile.retValue()
+                ru_score += us1_missile.value
+                us_score += ru1_missile.value
 
     if us1_missile.spawn is False and us2_missile.spawn is False:
         us_bomb_ind = pygame.image.load("text\\bomb2.png")
