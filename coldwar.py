@@ -16,12 +16,8 @@ def message(msg, screen, bg_color, msg_color, loc, font_size):  # bg = backgroun
         pygame.display.update()
 
 
-def x_checker(start, end, current_x):
-    return start <= current_x <= end
-
-
-def y_checker(start, end, current_y):
-    return start <= current_y <= end
+def checker(start, end, value):
+    return start <= value <= end
 
 
 class Clock:
@@ -110,13 +106,8 @@ class RectHitbox:
         self.start_y = start_y
         self.end_y = end_y
 
-    def draw(self, thickness, screen):
-        pygame.draw.rect(screen, (255, 255, 255), (self.start_x, self.start_y,
-                                                   (self.end_x - self.start_x),
-                                                   (self.end_y - self.start_y)), thickness)
-
     def detect(self, target_x, target_y):
-        return x_checker(self.start_x, self.end_x, target_x) and y_checker(self.start_y, self.end_y, target_y)
+        return checker(self.start_x, self.end_x, target_x) and checker(self.start_y, self.end_y, target_y)
 
 
 class Point2D:
@@ -177,15 +168,6 @@ class Character:
                 self.window.blit(img, (self.x, self.y))
         else:
             self.window.blit(img, (self.x, self.y))
-
-    def centerPoint(self):
-        return self.x + self.width / 2, self.y + self.length / 2
-
-    def centerX(self):
-        return self.x + self.width / 2
-
-    def centerY(self):
-        return self.y + self.length / 2
 
     def clamp(self):
         if self.x < self.min_x:
