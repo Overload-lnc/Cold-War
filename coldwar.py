@@ -3,10 +3,6 @@ import os
 import random
 
 
-def writeText(window, loc, text):
-    window.blit(text, loc)
-
-
 def message(msg, screen, bg_color, msg_color, loc, font_size):  # bg = background
     '''
     writes a message on the whole screen
@@ -21,48 +17,19 @@ def message(msg, screen, bg_color, msg_color, loc, font_size):  # bg = backgroun
         pygame.display.update()
 
 
-def drawImg(window, loc, img):
-    window.blit(img, loc)
-
-
 def x_checker(start, end, current_x):
-    '''
-    returns true if current_x is between start and end
-    '''
-
-    if start <= current_x <= end:
-        return True
-    else:
-        return False
+    return start <= current_x <= end
 
 
 def y_checker(start, end, current_y):
-    '''
-        returns true if current_y is between start and end
-    '''
-    if start <= current_y <= end:
-        return True
-    else:
-        return False
-
-
-def fontCreator(font_name, size):
-    return pygame.font.SysFont(font_name, size)
-
-
-def textRenderer(font, text, color):
-    return font.render(text, False, color)
-
-
-def load_img(img_dir):
-    return pygame.image.load(img_dir)
+    return start <= current_y <= end
 
 
 def createWindow(width, length, title, has_icon, icon_path):
     window = pygame.display.set_mode((width, length))
     pygame.display.set_caption(title)
     if has_icon:
-        pygame.display.set_icon(load_img(icon_path))
+        pygame.display.set_icon(pygame.image.load(icon_path))
     return window
 
 
@@ -175,9 +142,6 @@ class Point2D:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
-    def retPoint(self):
-        return (self.x, self.y)
 
 
 class Character:
@@ -302,16 +266,6 @@ class Effect:
         self.loc_set = True
 
 
-class Color:
-    def __init__(self, r, g, b):
-        self.r = r
-        self.g = g
-        self.b = b
-
-    def color(self):
-        return self.r, self.g, self.b
-
-
 pygame.init()
 window = createWindow(800, 700, "Cold War", False, "")
 clock = Clock(90)
@@ -370,31 +324,35 @@ chem_ru.setValue(400)
 log_ru = Token(725, 318, 75, 75, 800, 700, True, 0, 0, 0, 0)
 log_ru.setValue(400)
 
-char_us_tex = load_img(f"{main_dir}\\us_missile.png")
-us_missile_tex = load_img(f"{main_dir}\\missile_right.png")
-silo1_img = load_img(f"{main_dir}\\us_siloA1.png")
-silo2_img = load_img(f"{main_dir}\\us_siloB1.png")
-silo3_img = load_img(f"{main_dir}\\us_siloC1.png")
-chem_plant_us = load_img(f"{main_dir}\\chem_plant_us.png")
+# us texture loads
+char_us_tex = pygame.image.load("text\\us_missile.png")
+us_missile_tex = pygame.image.load("text\\missile_right.png")
+silo1_img = pygame.image.load("text\\us_siloA1.png")
+silo2_img = pygame.image.load("text\\us_siloB1.png")
+silo3_img = pygame.image.load("text\\us_siloC1.png")
+chem_plant_us = pygame.image.load("text\\chem_plant_us.png")
 
-char_ru_tex = load_img(f"{main_dir}\\russian_missile.png")
-ru_missile_tex = load_img(f"{main_dir}\\missile_left.png")
-silo01_img = load_img(f"{main_dir}\\ru_siloA1.png")
-silo02_img = load_img(f"{main_dir}\\ru_siloB1.png")
-silo03_img = load_img(f"{main_dir}\\ru_siloC1.png")
-chem_plant_ru = load_img(f"{main_dir}\\chem_plant_ru.png")
+# russian texture loads
+char_ru_tex = pygame.image.load("text\\russian_missile.png")
+ru_missile_tex = pygame.image.load("text\\missile_left.png")
+silo01_img = pygame.image.load("text\\ru_siloA1.png")
+silo02_img = pygame.image.load("text\\ru_siloB1.png")
+silo03_img = pygame.image.load("text\\ru_siloC1.png")
+chem_plant_ru = pygame.image.load("text\\chem_plant_ru.png")
 
-ctrl_panel_us = load_img(f"{main_dir}\\control_panel_us.png")
-ctrl_panel_ru = load_img(f"{main_dir}\\control_panel_ru.png")
-us_bomb_ind = load_img(f"{main_dir}\\bomb2.png")
-ru_bomb_ind = load_img(f"{main_dir}\\bomb2.png")
-log_dep = load_img(f"{main_dir}\\log_dep.png")
+# panel loads
+ctrl_panel_us = pygame.image.load("text\\control_panel_us.png")
+ctrl_panel_ru = pygame.image.load("text\\control_panel_ru.png")
+us_bomb_ind = pygame.image.load("text\\bomb2.png")
+ru_bomb_ind = pygame.image.load("text\\bomb2.png")
+log_dep = pygame.image.load("text\\log_dep.png")
 
-exp = load_img(f"{main_dir}\\explosion.png")
-exp_silo = load_img(f"{main_dir}\\silo_explosion.png")
-exp_c_us = load_img(f"{main_dir}\\chem_plant_us_x.png")
-exp_c_ru = load_img(f"{main_dir}\\chem_plant_ru_x.png")
-exp_log_dep = load_img(f"{main_dir}\\log_dep_x.png")
+# wreck loads
+exp = pygame.image.load("text\\explosion.png")
+exp_silo = pygame.image.load("text\\silo_explosion.png")
+exp_c_us = pygame.image.load("text\\chem_plant_us_x.png")
+exp_c_ru = pygame.image.load("text\\chem_plant_ru_x.png")
+exp_log_dep = pygame.image.load("text\\log_dep_x.png")
 
 missile_exp1 = Effect(50)
 missile_exp2 = Effect(50)
@@ -423,74 +381,43 @@ log_ru_exp.active = True
 
 winner = ""
 
-black = Color(0, 0, 0).color()
+black = (0, 0, 0)
 
-main_font = fontCreator("Arial", 13)
-stat_font = fontCreator("Arial", 11)
+main_font = pygame.font.SysFont("Arial", 13)
+stat_font = pygame.font.SysFont("Arial", 11)
 message("Game by Overload Inc.", window, black, (255, 255, 255), (276, 300), 30)
 
 while run:
     # reval zone, reval = reValue
-    if silo1.spawn:
-        us_stat1 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        us_stat1 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if silo2.spawn:
-        us_stat2 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        us_stat2 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if silo3.spawn:
-        us_stat3 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        us_stat3 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if chem_us.spawn:
-        us_stat4 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        us_stat4 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if log_us.spawn:
-        us_stat5 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        us_stat5 = textRenderer(stat_font, "Offline", (255, 0, 0))
+    spawn_str = ["Offline", "Online"]
+    spawn_color = [(255, 0, 0), (0, 255, 0)]
+    # US Log render
+    us_stat1 = stat_font.render(spawn_str[int(silo1.spawn)], False, spawn_color[int(silo1.spawn)])
+    us_stat2 = stat_font.render(spawn_str[int(silo2.spawn)], False, spawn_color[int(silo2.spawn)])
+    us_stat3 = stat_font.render(spawn_str[int(silo3.spawn)], False, spawn_color[int(silo3.spawn)])
+    us_stat4 = stat_font.render(spawn_str[int(chem_us.spawn)], False, spawn_color[int(chem_us.spawn)])
+    us_stat5 = stat_font.render(spawn_str[int(log_us.spawn)], False, spawn_color[int(log_us.spawn)])
 
-    if silo01.spawn:
-        ru_stat1 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        ru_stat1 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if silo02.spawn:
-        ru_stat2 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        ru_stat2 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if silo03.spawn:
-        ru_stat3 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        ru_stat3 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if chem_ru.spawn:
-        ru_stat4 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        ru_stat4 = textRenderer(stat_font, "Offline", (255, 0, 0))
-    if log_ru.spawn:
-        ru_stat5 = textRenderer(stat_font, "Online", (0, 255, 0))
-    else:
-        ru_stat5 = textRenderer(stat_font, "Offline", (255, 0, 0))
+    ru_stat1 = stat_font.render(spawn_str[int(silo01.spawn)], False, spawn_color[int(silo01.spawn)])
+    ru_stat2 = stat_font.render(spawn_str[int(silo02.spawn)], False, spawn_color[int(silo02.spawn)])
+    ru_stat3 = stat_font.render(spawn_str[int(silo03.spawn)], False, spawn_color[int(silo03.spawn)])
+    ru_stat4 = stat_font.render(spawn_str[int(chem_ru.spawn)], False, spawn_color[int(chem_ru.spawn)])
+    ru_stat5 = stat_font.render(spawn_str[int(log_ru.spawn)], False, spawn_color[int(log_ru.spawn)])
 
-    us_score_text = textRenderer(main_font, f"{us_score}", black)
-    ru_score_text = textRenderer(main_font, f"{ru_score}", black)
+    us_score_text = main_font.render(f"{us_score}", False, black)
+    ru_score_text = main_font.render(f"{ru_score}", False, black)
 
     us_ms_point = Point2D(char_us.x + char_us.width, char_us.y + char_us.length / 2)
     ru_ms_point = Point2D(char_ru.x - ru1_missile.width, char_ru.y + char_ru.length / 2)
 
-    if us1_missile.spawn is False:
-        us1_missile.x = us_ms_point.x
-        us1_missile.y = us_ms_point.y
-    if us2_missile.spawn is False:
-        us2_missile.x = us_ms_point.x
-        us2_missile.y = us_ms_point.y
-    if ru1_missile.spawn is False:
-        ru1_missile.x = ru_ms_point.x
-        ru1_missile.y = ru_ms_point.y
-    if ru2_missile.spawn is False:
-        ru2_missile.x = ru_ms_point.x
-        ru2_missile.y = ru_ms_point.y
+    if not us1_missile.spawn:
+        us1_missile.x, us1_missile.y = us_ms_point.x, us_ms_point.y
+    if not us2_missile.spawn:
+        us2_missile.x, us2_missile.y = us_ms_point.x, us_ms_point.y
+    if not ru1_missile.spawn:
+        ru1_missile.x, ru1_missile.y = ru_ms_point.x, ru_ms_point.y
+    if not ru2_missile.spawn:
+        ru2_missile.x, ru2_missile.y = ru_ms_point.x, ru_ms_point.y
 
     # event handler
     for event in pygame.event.get():
@@ -548,8 +475,8 @@ while run:
         winner = "usa"
         clock.tickDifferent(1)
 
-    drawImg(window, (0, 610), ctrl_panel_us)
-    drawImg(window, (410, 610), ctrl_panel_ru)
+    window.blit(ctrl_panel_us, (0, 610))
+    window.blit(ctrl_panel_ru, (410, 610))
 
     silo1.drawTexture(window, silo1_img)
     silo2.drawTexture(window, silo2_img)
@@ -750,7 +677,7 @@ while run:
             us1_missile.spawn = False
             ru1_missile.spawn = False
             missile_exp1.active = True
-            drawImg(window, (us1_missile.x, us1_missile.y), exp)
+            window.blit(exp, (us1_missile.x, us1_missile.y))
             ru_score += us1_missile.retValue()
             us_score += ru1_missile.retValue()
         else:
@@ -760,7 +687,7 @@ while run:
                 us1_missile.spawn = False
                 ru2_missile.spawn = False
                 missile_exp1.active = True
-                drawImg(window, (us1_missile.x, us1_missile.y), exp)
+                window.blit(exp, (us1_missile.x, us1_missile.y))
                 ru_score += us1_missile.retValue()
                 us_score += ru1_missile.retValue()
     if us2_missile.spawn is True:
@@ -777,7 +704,7 @@ while run:
             us2_missile.spawn = False
             ru1_missile.spawn = False
             missile_exp2.active = True
-            drawImg(window, (us2_missile.x, us2_missile.y), exp)
+            window.blit(exp, (us2_missile.x, us2_missile.y))
             ru_score += us1_missile.retValue()
             us_score += ru1_missile.retValue()
         else:
@@ -787,7 +714,7 @@ while run:
                 ru2_missile.spawn = False
                 us2_missile.spawn = False
                 missile_exp2.active = True
-                drawImg(window, (us2_missile.x, us2_missile.y), exp)
+                window.blit(exp, (us2_missile.x, us2_missile.y))
                 ru_score += us1_missile.retValue()
                 us_score += ru1_missile.retValue()
 
@@ -805,7 +732,7 @@ while run:
         if us1_missile.spawn is True and ru1_missile.IsTriggered():
             ru1_missile.spawn = False
             us1_missile.spawn = False
-            drawImg(window, (ru1_missile.x, ru1_missile.y), exp)
+            window.blit(exp, (ru1_missile.x, ru1_missile.y))
             ru_score += us1_missile.retValue()
             us_score += ru1_missile.retValue()
         else:
@@ -814,7 +741,7 @@ while run:
             if us2_missile.spawn is True and ru1_missile.IsTriggered():
                 us2_missile.spawn = False
                 ru1_missile.spawn = False
-                drawImg(window, (ru1_missile.x, ru1_missile.y), exp)
+                window.blit(exp, (ru1_missile.x, ru1_missile.y))
                 ru_score += us1_missile.retValue()
                 us_score += ru1_missile.retValue()
     if ru2_missile.spawn is True:
@@ -831,7 +758,7 @@ while run:
         if us1_missile.spawn is True and ru2_missile.IsTriggered():
             us1_missile.spawn = False
             ru2_missile.spawn = False
-            drawImg(window, (ru2_missile.x, ru2_missile.y), exp)
+            window.blit(exp, (ru2_missile.x, ru2_missile.y))
             ru_score += us1_missile.retValue()
             us_score += ru1_missile.retValue()
         else:
@@ -840,41 +767,41 @@ while run:
             if us2_missile.spawn is True and ru2_missile.IsTriggered():
                 us2_missile.spawn = False
                 ru2_missile.spawn = False
-                drawImg(window, (ru2_missile.x, ru2_missile.y), exp)
+                window.blit(exp, (ru2_missile.x, ru2_missile.y))
                 ru_score += us1_missile.retValue()
                 us_score += ru1_missile.retValue()
 
     if us1_missile.spawn is False and us2_missile.spawn is False:
-        us_bomb_ind = load_img(f"{main_dir}\\bomb2.png")
+        us_bomb_ind = pygame.image.load("text\\bomb2.png")
     elif us1_missile.spawn is False or us2_missile.spawn is False:
-        us_bomb_ind = load_img(f"{main_dir}\\bomb1.png")
+        us_bomb_ind = pygame.image.load("text\\bomb1.png")
     else:
-        us_bomb_ind = load_img(f"{main_dir}\\bomb0.png")
+        us_bomb_ind = pygame.image.load("text\\bomb0.png")
 
     if ru1_missile.spawn is False and ru2_missile.spawn is False:
-        ru_bomb_ind = load_img(f"{main_dir}\\bomb2.png")
+        ru_bomb_ind = pygame.image.load("text\\bomb2.png")
     elif ru1_missile.spawn is False or ru2_missile.spawn is False:
-        ru_bomb_ind = load_img(f"{main_dir}\\bomb1.png")
+        ru_bomb_ind = pygame.image.load("text\\bomb1.png")
     else:
-        ru_bomb_ind = load_img(f"{main_dir}\\bomb0.png")
+        ru_bomb_ind = pygame.image.load("text\\bomb0.png")
 
-    drawImg(window, (165, 638), us_bomb_ind)
-    drawImg(window, (575, 638), ru_bomb_ind)
+    window.blit(us_bomb_ind, (165, 638))
+    window.blit(ru_bomb_ind, (575, 638))
 
-    writeText(window, (330, 659), us_score_text)
-    writeText(window, (740, 659), ru_score_text)
+    window.blit(us_score_text, (330, 659))
+    window.blit(ru_score_text, (740, 659))
 
-    writeText(window, (280, 632), us_stat1)
-    writeText(window, (280, 645), us_stat2)
-    writeText(window, (280, 658), us_stat3)
-    writeText(window, (280, 671), us_stat4)
-    writeText(window, (280, 684), us_stat5)
+    window.blit(us_stat1, (280, 632))
+    window.blit(us_stat2, (280, 645))
+    window.blit(us_stat3, (280, 658))
+    window.blit(us_stat4, (280, 671))
+    window.blit(us_stat5, (280, 684))
 
-    writeText(window, (690, 632), ru_stat1)
-    writeText(window, (690, 645), ru_stat2)
-    writeText(window, (690, 658), ru_stat3)
-    writeText(window, (690, 671), ru_stat4)
-    writeText(window, (690, 684), ru_stat5)
+    window.blit(ru_stat1, (690, 632))
+    window.blit(ru_stat2, (690, 645))
+    window.blit(ru_stat3, (690, 658))
+    window.blit(ru_stat4, (690, 671))
+    window.blit(ru_stat5, (690, 684))
 
     # us effects
     if missile_exp1.active is True:
